@@ -1,31 +1,61 @@
-struct Register {
-        register: u8
+pub struct Register {
+        pub register: u8
 }
 
-struct General_Purpose_Registers {
+pub struct General_Purpose_Registers {
         registers: [Register; 16]
 }
 
-struct Instruction_Register {
-        register: Register
+impl General_Purpose_Registers {
+
+        pub fn new() -> Self {
+                General_Purpose_Registers {
+                        registers: core::array::from_fn(|_| Register { register: 0 })
+                }
+        }
+
+        pub fn fetch_register(&self, index: usize) -> u8 {
+                self.registers[index].register
+        }
+
+        pub fn set_register(&mut self, index: usize, value: u8) {
+                self.registers[index].register = value;
+        }
+    
 }
 
-struct Flag_Register {
-        register: Register
+pub struct Instruction_Register {
+        pub register: u16
 }
 
-struct Delay_Timer {
-        timer: Register
+impl Instruction_Register {
+        pub fn new() -> Self {
+                Instruction_Register {
+                        register: 0
+                }
+        }
+
+        pub fn set_register(&mut self, value: u16) {
+                self.register = value;
+        }
+
+        pub fn fetch_register(&self) -> u16 {
+                self.register
+        }
 }
 
-struct Sound_Timer {
-        timer: Register
+pub struct Program_Counter {
+        pub counter: usize 
 }
 
-struct Program_Counter {
-        counter: u16
+impl Program_Counter {
+        pub fn increment(&mut self) {
+                self.counter += 2;
+        }
+
+        pub fn goto(&mut self, location: usize) {
+                self.counter = location;
+        }
 }
 
-struct Stack_Pointer {
-        pointer: Register
-}
+
