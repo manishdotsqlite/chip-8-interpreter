@@ -21,6 +21,10 @@ impl General_Purpose_Registers {
         pub fn set_register(&mut self, index: usize, value: u8) {
                 self.registers[index].register = value;
         }
+
+        pub fn display_register(&self, index: usize) {
+                println!("V{:X} = {:#X}", index, self.registers[index].register);
+        }
     
 }
 

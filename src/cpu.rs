@@ -1,4 +1,4 @@
-use crate::{instruction::{ self, Instruction, Operation}, memory::Memory, register::{ General_Purpose_Registers, Instruction_Register, Program_Counter}, stack::Stack, };
+use crate::{compiler::compiler, instruction::{ self, Instruction, Operation}, memory::Memory, register::{ General_Purpose_Registers, Instruction_Register, Program_Counter}, stack::Stack };
 use std::{thread::sleep, time::Duration};
 
 pub struct CPU {
@@ -116,6 +116,7 @@ impl CPU {
                                 let value_x = self.general_purpose_registers.fetch_register(x as usize);
                                 let value_y = self.general_purpose_registers.fetch_register(y as usize);
                                 self.general_purpose_registers.set_register(x as usize, value_x.wrapping_add(value_y));
+                                self.general_purpose_registers.display_register(x as usize);
                         },
                         Operation::SUB(x, y) => {
                                 println!("Subtracting V{:X} from V{:X}", x, y);
@@ -145,7 +146,7 @@ impl CPU {
                 };
         }
 
-    pub fn execute(&mut self, location: usize, count: usize) {
+    pub fn execute_from_memory(&mut self, location: usize, count: usize) {
         loop {
             let instruction_bytes = self.memory.fetch_instruction(location);
             let instruction = Instruction::decode_instruction(instruction_bytes);
@@ -156,6 +157,14 @@ impl CPU {
             }
         }
     }
+
+    pub fn execute_from_file(&mut self, filename: &str) {
+        let instructions = compiler(filename);
+        for instruction in instructions {
+            self.execute_instruction(instruction);
+        }
+    }
+
 
     pub fn inject_instructions(&mut self, data: &[u8], location: usize) {
         self.memory.inject_instructions(data, location);
