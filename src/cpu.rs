@@ -165,9 +165,7 @@ impl CPU {
         }
     }
 
-
     pub fn inject_instructions(&mut self, data: &[u8], location: usize) {
         self.memory.inject_instructions(data, location);
     }
-
 }
